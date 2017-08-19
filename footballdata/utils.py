@@ -2,11 +2,12 @@ import re
 import requests
 
 
-def fetch_data_from_api(endpoint, api_key=''):
+def fetch_data_from_api(endpoint, api_key='', options=None):
     """Fetches data from the endpoint and returns it
 
     :param endpoint: api endpoint to connect
     :param api_key: optional api key
+    :param options: data to sent with api call
     :return: 
     """
 
@@ -15,7 +16,10 @@ def fetch_data_from_api(endpoint, api_key=''):
     if api_key:
         headers['X-Auth-Token'] = api_key
 
-    r = requests.get(endpoint, headers=headers)
+    # Build data
+    params = options if options else {}
+
+    r = requests.get(endpoint, headers=headers, params=params)
 
     # Return the json data if request is successful
     if r.status_code == 200:

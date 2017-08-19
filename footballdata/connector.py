@@ -25,22 +25,25 @@ class Connector:
         self.base_url = "http://api.football-data.org/{api_version}/".format(api_version=api_version)
 
         # Build other endpoint urls
-        self.competition_endpoint = "{base_url}/competitions/".format(base_url=self.base_url)
-        self.fixtures_endpoint = "{base_url}/fixtures/".format(base_url=self.base_url)
+        self.competition_endpoint = "{base_url}competitions/".format(base_url=self.base_url)
+        self.fixtures_endpoint = "{base_url}fixtures/".format(base_url=self.base_url)
 
         # Initialise competitions and fixtures
         self._competitions = []
         self._fixtures = []
 
-    def get_competitions(self, force_update=False):
+    def get_competitions(self, season='', force_update=False):
         """Fetches all competitions
         
         :param force_update: Boolean, overrides cached results if True
+        :param season: 4 digit integer representing a season, optional
         :return: DataSet of Competition objects
         """
 
         if force_update or not self._competitions:
-            self._competitions = DataSet(klass=Competition, endpoint=self.competition_endpoint, api_key=self.api_key)
+            options = {'season': season} if season else None
+            self._competitions = DataSet(klass=Competition, endpoint=self.competition_endpoint, api_key=self.api_key,
+                                         options=options)
 
         return self._competitions
 

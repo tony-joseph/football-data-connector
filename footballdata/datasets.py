@@ -19,15 +19,6 @@ class FootballDataObject:
         self.base_endpoint = ''
         self.api_key = ''
 
-    def _build_endpoints(self):
-        """Builds API endpoints
-        
-        Creates API endpoints which are dependant on other attributes hence 
-        can not be created in init
-        """
-
-        pass
-
 
 class Competition(FootballDataObject):
     """Class to represent a competition"""
@@ -53,9 +44,6 @@ class Competition(FootballDataObject):
         :return: DataSet of Team objects
         """
 
-        # Build endpoints
-        self._build_endpoints()
-
         if force_update or not self._teams:
             self._teams = DataSet(klass=Team, endpoint=self.teams_endpoint, api_key=self.api_key)
 
@@ -67,9 +55,6 @@ class Competition(FootballDataObject):
         :param force_update: Boolean, overrides cached results if True
         :return: DataSet of Fixture objects
         """
-
-        # Build endpoints
-        self._build_endpoints()
 
         if force_update or not self._fixtures:
             self._fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
@@ -103,9 +88,6 @@ class Team(FootballDataObject):
         :return: DataSet of Fixture objects
         """
 
-        # Build endpoints
-        self._build_endpoints()
-
         if force_update or not self._fixtures:
             self._fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
 
@@ -115,10 +97,19 @@ class Team(FootballDataObject):
 class DataSet:
     """Class to represent a sequence of football data objects"""
 
-    def __init__(self, klass, endpoint, api_key=''):
+    def __init__(self, klass, endpoint, api_key='', options=None):
+        """Initialises FootballDataObject sequence
+
+        :param klass: type, Class of objects in data set. Should be either FootballDataObject or its subclass
+        :param endpoint: str, API endpoint to fetch data
+        :param api_key: str, API key
+        :param options: dict, Additional arguments to sent with API call
+        """
+
         self._klass = klass
         self._endpoint = endpoint
         self._api_key = api_key
+        self._options = options if options else {}
         self._data_set = []
 
     def _create_data_set_item(self, cleaned_data):
@@ -143,7 +134,7 @@ class DataSet:
         """Loads data from football-data.org in not already loaded"""
 
         if not self._data_set:
-            data_list = fetch_data_from_api(endpoint=self._endpoint, api_key=self._api_key)
+            data_list = fetch_data_from_api(endpoint=self._endpoint, api_key=self._api_key, options=self._options)
 
             # Handles inconsistent API structures
             if self._klass == Team:

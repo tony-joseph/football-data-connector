@@ -55,3 +55,8 @@ target/
 
 # IDE configurations
 .idea
+
+# IPython notebooks
+*.ipynb_checkpoints
+*.ipynb
+
