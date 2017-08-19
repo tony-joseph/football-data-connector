@@ -61,6 +61,18 @@ class Competition(FootballDataObject):
 
         return self.__fixtures
 
+    def get_league_table(self, force_update=False):
+        """Fetches standing of all teams in competition
+
+        :param force_update: Boolean, overrides cached results if True
+        :return: DataSet of Standing objects
+        """
+
+        if force_update or not self.__league_table:
+            self.__league_table = DataSet(klass=Standing, endpoint=self.league_table_endpoint, api_key=self.api_key)
+
+        return self.__league_table
+
 
 class Fixture(FootballDataObject):
     """Class to represent a fixture"""
@@ -92,6 +104,12 @@ class Team(FootballDataObject):
             self.__fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
 
         return self.__fixtures
+
+
+class Standing(FootballDataObject):
+    """Class to represent a team's standing in a competition"""
+
+    pass
 
 
 class DataSet:
@@ -150,7 +168,16 @@ class DataSet:
                 # Actual team list is in dict with key teams
                 data_list = data_list['teams']
             elif self.__klass == Fixture:
+                # Actual fixture list is in dict with key fixtures
                 data_list = data_list['fixtures']
+            elif self.__klass == Standing:
+                # Handle differences in league and cup standing
+                if 'standing' in data_list:
+                    # Competition is a league
+                    data_list = data_list['standing']
+                else:
+                    # No league table available
+                    return
 
             cleaned_data_list = map(clean_object, data_list)
             self.__data_set = list(map(self.__create_data_set_item, cleaned_data_list))
