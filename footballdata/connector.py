@@ -4,7 +4,7 @@ from .datasets import DataSet, Competition, Fixture
 class Connector:
     """Class to initialise connection to football-data.org"""
 
-    _supported_api_versions = ['v1']
+    __supported_api_versions = ['v1']
 
     def __init__(self, api_key='', api_version='v1'):
         """Initialises connection to football-data.org
@@ -15,7 +15,7 @@ class Connector:
         """
 
         # Check if API version is supported
-        if api_version not in self._supported_api_versions:
+        if api_version not in self.__supported_api_versions:
             raise NotImplementedError('This API version is not supported')
 
         self.api_key = api_key
@@ -29,8 +29,13 @@ class Connector:
         self.fixtures_endpoint = "{base_url}fixtures/".format(base_url=self.base_url)
 
         # Initialise competitions and fixtures
-        self._competitions = []
-        self._fixtures = []
+        self.__competitions = []
+        self.__fixtures = []
+
+    @classmethod
+    def supported_api_versions(cls):
+        """Returns the supported api versions as list"""
+        return cls.__supported_api_versions
 
     def get_competitions(self, season='', force_update=False):
         """Fetches all competitions
@@ -40,12 +45,12 @@ class Connector:
         :return: DataSet of Competition objects
         """
 
-        if force_update or not self._competitions:
+        if force_update or not self.__competitions:
             options = {'season': season} if season else None
-            self._competitions = DataSet(klass=Competition, endpoint=self.competition_endpoint, api_key=self.api_key,
-                                         options=options)
+            self.__competitions = DataSet(klass=Competition, endpoint=self.competition_endpoint, api_key=self.api_key,
+                                          options=options)
 
-        return self._competitions
+        return self.__competitions
 
     def get_fixtures(self, force_update=False):
         """Fetches all fixtures
@@ -54,7 +59,7 @@ class Connector:
         :return: DataSet of Fixture objects
         """
 
-        if force_update or not self._fixtures:
-            self._fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
+        if force_update or not self.__fixtures:
+            self.__fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
 
-        return self._fixtures
+        return self.__fixtures

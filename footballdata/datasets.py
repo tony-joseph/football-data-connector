@@ -33,9 +33,9 @@ class Competition(FootballDataObject):
         self.league_table_endpoint = self.links['leagueTable']['href']
         self.teams_endpoint = self.links['teams']['href']
         self.base_endpoint = self.links['self']['href']
-        self._teams = []
-        self._fixtures = []
-        self._league_table = []
+        self.__teams = []
+        self.__fixtures = []
+        self.__league_table = []
 
     def get_teams(self, force_update=False):
         """Fetches all teams in a competition
@@ -44,10 +44,10 @@ class Competition(FootballDataObject):
         :return: DataSet of Team objects
         """
 
-        if force_update or not self._teams:
-            self._teams = DataSet(klass=Team, endpoint=self.teams_endpoint, api_key=self.api_key)
+        if force_update or not self.__teams:
+            self.__teams = DataSet(klass=Team, endpoint=self.teams_endpoint, api_key=self.api_key)
 
-        return self._teams
+        return self.__teams
 
     def get_fixtures(self, force_update=False):
         """Fetches all fixtures in a competition
@@ -56,10 +56,10 @@ class Competition(FootballDataObject):
         :return: DataSet of Fixture objects
         """
 
-        if force_update or not self._fixtures:
-            self._fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
+        if force_update or not self.__fixtures:
+            self.__fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
 
-        return self._fixtures
+        return self.__fixtures
 
 
 class Fixture(FootballDataObject):
@@ -78,8 +78,8 @@ class Team(FootballDataObject):
         self.fixtures_endpoint = self.links['fixtures']['href']
         self.players_endpoint = self.links['players']['href']
         self.base_endpoint = self.links['self']['href']
-        self._fixtures = []
-        self._players = []
+        self.__fixtures = []
+        self.__players = []
 
     def get_fixtures(self, force_update=False):
         """Fetches all fixtures for a team
@@ -88,10 +88,10 @@ class Team(FootballDataObject):
         :return: DataSet of Fixture objects
         """
 
-        if force_update or not self._fixtures:
-            self._fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
+        if force_update or not self.__fixtures:
+            self.__fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
 
-        return self._fixtures
+        return self.__fixtures
 
 
 class DataSet:
@@ -107,77 +107,77 @@ class DataSet:
         :param data_list: iterable containing klass objects
         """
 
-        self._klass = klass
-        self._endpoint = endpoint
-        self._api_key = api_key
-        self._options = options if options else {}
+        self.__klass = klass
+        self.__endpoint = endpoint
+        self.__api_key = api_key
+        self.__options = options if options else {}
 
         # Set data_list as data_set if available
         if data_list:
             # Type check all elements in iterable
             if not all(isinstance(item, klass) for item in data_list):
                 raise TypeError("All items should be an instance of {}".format(klass))
-            self._data_set = list(data_list)
+            self.__data_set = list(data_list)
         else:
-            self._data_set = []
+            self.__data_set = []
 
-    def _create_data_set_item(self, cleaned_data):
+    def __create_data_set_item(self, cleaned_data):
         """Creates a single football data object
         
         :param cleaned_data: Dict with proper key value pairs
         :return: FootballDataObject object
         """
 
-        data_set_item = self._klass(**cleaned_data)
+        data_set_item = self.__klass(**cleaned_data)
 
         # Build base endpoint if id is available
         if hasattr(data_set_item, 'id'):
-            data_set_item.base_endpoint = "{}{}".format(self._endpoint, data_set_item.id)
+            data_set_item.base_endpoint = "{}{}".format(self.__endpoint, data_set_item.id)
         else:
-            data_set_item.base_endpoint = self._endpoint
+            data_set_item.base_endpoint = self.__endpoint
 
-        data_set_item.api_key = self._api_key
+        data_set_item.api_key = self.__api_key
         return data_set_item
 
-    def _load_data_set(self):
+    def __load_data_set(self):
         """Loads data from football-data.org in not already loaded"""
 
-        if not self._data_set and self._endpoint:
-            data_list = fetch_data_from_api(endpoint=self._endpoint, api_key=self._api_key, options=self._options)
+        if not self.__data_set and self.__endpoint:
+            data_list = fetch_data_from_api(endpoint=self.__endpoint, api_key=self.__api_key, options=self.__options)
 
             # Handles inconsistent API structures
-            if self._klass == Team:
+            if self.__klass == Team:
                 # Actual team list is in dict with key teams
                 data_list = data_list['teams']
-            elif self._klass == Fixture:
+            elif self.__klass == Fixture:
                 data_list = data_list['fixtures']
 
             cleaned_data_list = map(clean_object, data_list)
-            self._data_set = list(map(self._create_data_set_item, cleaned_data_list))
+            self.__data_set = list(map(self.__create_data_set_item, cleaned_data_list))
 
     def __iter__(self):
-        self._load_data_set()
-        for data in self._data_set:
+        self.__load_data_set()
+        for data in self.__data_set:
             yield data
 
     def __getitem__(self, key):
-        self._load_data_set()
+        self.__load_data_set()
 
         if isinstance(key, int):
             # If key is an integer, return item at index
             try:
-                return self._data_set[key]
+                return self.__data_set[key]
             except IndexError:
                 raise IndexError('Index out of range')
         elif isinstance(key, slice):
-            return DataSet(klass=self._klass, data_list=self._data_set[key])
+            return DataSet(klass=self.__klass, data_list=self.__data_set[key])
 
         raise TypeError('Key must be an integer or slice object')
 
     def __len__(self):
-        self._load_data_set()
-        return len(self._data_set)
+        self.__load_data_set()
+        return len(self.__data_set)
 
     def __bool__(self):
-        self._load_data_set()
-        return bool(self._data_set)
+        self.__load_data_set()
+        return bool(self.__data_set)
