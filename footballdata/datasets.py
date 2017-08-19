@@ -97,20 +97,29 @@ class Team(FootballDataObject):
 class DataSet:
     """Class to represent a sequence of football data objects"""
 
-    def __init__(self, klass, endpoint, api_key='', options=None):
+    def __init__(self, klass, endpoint='', api_key='', options=None, data_list=None):
         """Initialises FootballDataObject sequence
 
         :param klass: type, Class of objects in data set. Should be either FootballDataObject or its subclass
         :param endpoint: str, API endpoint to fetch data
         :param api_key: str, API key
         :param options: dict, Additional arguments to sent with API call
+        :param data_list: iterable containing klass objects
         """
 
         self._klass = klass
         self._endpoint = endpoint
         self._api_key = api_key
         self._options = options if options else {}
-        self._data_set = []
+
+        # Set data_list as data_set if available
+        if data_list:
+            # Type check all elements in iterable
+            if not all(isinstance(item, klass) for item in data_list):
+                raise TypeError("All items should be an instance of {}".format(klass))
+            self._data_set = list(data_list)
+        else:
+            self._data_set = []
 
     def _create_data_set_item(self, cleaned_data):
         """Creates a single football data object
@@ -133,7 +142,7 @@ class DataSet:
     def _load_data_set(self):
         """Loads data from football-data.org in not already loaded"""
 
-        if not self._data_set:
+        if not self._data_set and self._endpoint:
             data_list = fetch_data_from_api(endpoint=self._endpoint, api_key=self._api_key, options=self._options)
 
             # Handles inconsistent API structures
@@ -154,14 +163,16 @@ class DataSet:
     def __getitem__(self, key):
         self._load_data_set()
 
-        # If key is an integer
         if isinstance(key, int):
+            # If key is an integer, return item at index
             try:
                 return self._data_set[key]
             except IndexError:
                 raise IndexError('Index out of range')
+        elif isinstance(key, slice):
+            return DataSet(klass=self._klass, data_list=self._data_set[key])
 
-        raise TypeError('Key must be an integer')
+        raise TypeError('Key must be an integer or slice object')
 
     def __len__(self):
         self._load_data_set()
