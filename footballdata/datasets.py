@@ -77,7 +77,12 @@ class Competition(FootballDataObject):
 class Fixture(FootballDataObject):
     """Class to represent a fixture"""
 
-    pass
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+
+        # Convert date to datetime object
+        if hasattr(self, 'date'):
+            self.date = datetime_parse(self.date)
 
 
 class Team(FootballDataObject):
