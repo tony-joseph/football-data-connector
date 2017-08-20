@@ -105,11 +105,37 @@ class Team(FootballDataObject):
 
         return self.__fixtures
 
+    def get_players(self, force_update=False):
+        """Fetches all players in a team
+
+        :param force_update: Boolean, overrides cached results if True
+        :return: DataSet of Player objects
+        """
+
+        if force_update or not self.__players:
+            self.__players = DataSet(klass=Player, endpoint=self.players_endpoint, api_key=self.api_key)
+
+        return self.__players
+
 
 class Standing(FootballDataObject):
     """Class to represent a team's standing in a competition"""
 
     pass
+
+
+class Player(FootballDataObject):
+    """Class to represent a player"""
+
+    def __init__(self, **kwargs):
+        """Initialises Player object"""
+        super().__init__(**kwargs)
+
+        # Convert contract_until and date_of_birth to datetime objects
+        if hasattr(self, 'contract_until'):
+            self.contract_until = datetime_parse(self.contract_until)
+        if hasattr(self, 'date_of_birth'):
+            self.date_of_birth = datetime_parse(self.date_of_birth)
 
 
 class DataSet:
@@ -178,6 +204,8 @@ class DataSet:
                 else:
                     # No league table available
                     return
+            elif self.__klass == Player:
+                data_list = data_list['players']
 
             cleaned_data_list = map(clean_object, data_list)
             self.__data_set = list(map(self.__create_data_set_item, cleaned_data_list))
