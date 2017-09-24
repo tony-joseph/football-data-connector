@@ -89,7 +89,6 @@ A **Competition** object represents a competition in football-data.org API
 * last_updated
 * league
 * number_of_games
-* number_of_match_days
 * number_of_teams
 * year
 
