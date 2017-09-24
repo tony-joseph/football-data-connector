@@ -10,7 +10,7 @@ class FootballDataObject:
         """Initialises new object with attributes from keyword arguments"""
 
         for key in kwargs.keys():
-            if key == 'last_updated':
+            if key == 'last_updated' and kwargs[key]:
                 kwargs[key] = datetime_parse(kwargs[key])
             setattr(self, key, kwargs[key])
 
