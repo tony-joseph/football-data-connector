@@ -194,26 +194,30 @@ class DataSet:
         if not self.__data_set and self.__endpoint:
             data_list = fetch_data_from_api(endpoint=self.__endpoint, api_key=self.__api_key, options=self.__options)
 
-            # Handles inconsistent API structures
-            if self.__klass == Team:
-                # Actual team list is in dict with key teams
-                data_list = data_list['teams']
-            elif self.__klass == Fixture:
-                # Actual fixture list is in dict with key fixtures
-                data_list = data_list['fixtures']
-            elif self.__klass == Standing:
-                # Handle differences in league and cup standing
-                if 'standing' in data_list:
-                    # Competition is a league
-                    data_list = data_list['standing']
-                else:
-                    # No league table available
-                    return
-            elif self.__klass == Player:
-                data_list = data_list['players']
+            if data_list:
+                # Handles inconsistent API structures
+                if self.__klass == Team:
+                    # Actual team list is in dict with key teams
+                    data_list = data_list['teams']
+                elif self.__klass == Fixture:
+                    # Actual fixture list is in dict with key fixtures
+                    data_list = data_list['fixtures']
+                elif self.__klass == Standing:
+                    # Handle differences in league and cup standing
+                    if 'standing' in data_list:
+                        # Competition is a league
+                        data_list = data_list['standing']
+                    else:
+                        # No league table available
+                        return
+                elif self.__klass == Player:
+                    data_list = data_list['players']
 
-            cleaned_data_list = map(clean_object, data_list)
-            self.__data_set = list(map(self.__create_data_set_item, cleaned_data_list))
+                cleaned_data_list = map(clean_object, data_list)
+                self.__data_set = list(map(self.__create_data_set_item, cleaned_data_list))
+            else:
+                # Data list fetching failed due to some reason
+                self.__data_set = []
 
     def __iter__(self):
         self.__load_data_set()
