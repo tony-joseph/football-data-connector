@@ -137,9 +137,9 @@ class Player(FootballDataObject):
         super().__init__(**kwargs)
 
         # Convert contract_until and date_of_birth to datetime objects
-        if hasattr(self, 'contract_until'):
+        if hasattr(self, 'contract_until') and self.contract_until:
             self.contract_until = datetime_parse(self.contract_until)
-        if hasattr(self, 'date_of_birth'):
+        if hasattr(self, 'date_of_birth') and self.date_of_birth:
             self.date_of_birth = datetime_parse(self.date_of_birth)
 
 
