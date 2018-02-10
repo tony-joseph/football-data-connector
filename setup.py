@@ -2,7 +2,7 @@ from setuptools import setup
 
 
 setup(
-    name='Football Data Connector',
+    name='football-data-connector',
     version='0.1.0',
     url='https://github.com/tony-joseph/football-data-connector',
     license='BSD',
