@@ -12,8 +12,8 @@ setup(
     packages=['footballdata'],
     include_package_data=True,
     install_requires=[
-        'python-dateutil>=2.6.1',
-        'requests>=2.18.3',
+        'python-dateutil>=2.7.3',
+        'requests>=2.19.1',
     ],
     classifiers=[
         'Development Status :: 3 - Alpha',

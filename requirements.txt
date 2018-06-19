@@ -1,2 +1,2 @@
-python-dateutil==2.6.1
-requests==2.18.3
+python-dateutil==2.7.3
+requests==2.19.1
