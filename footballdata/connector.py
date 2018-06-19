@@ -18,8 +18,8 @@ class Connector:
         if api_version not in self.__supported_api_versions:
             raise NotImplementedError('This API version is not supported')
 
-        self.api_key = api_key
-        self.api_version = api_version
+        self.__api_key = api_key
+        self.__api_version = api_version
 
         # Build base url with API version
         self.base_url = "http://api.football-data.org/{api_version}/".format(api_version=api_version)
@@ -37,6 +37,14 @@ class Connector:
         """Returns the supported api versions as list"""
         return cls.__supported_api_versions
 
+    @property
+    def api_key(self):
+        return self.__api_key
+
+    @property
+    def api_version(self):
+        return self.__api_version
+
     def get_competitions(self, season='', force_update=False):
         """Fetches all competitions
         
@@ -47,7 +55,7 @@ class Connector:
 
         if force_update or not self.__competitions:
             options = {'season': season} if season else None
-            self.__competitions = DataSet(klass=Competition, endpoint=self.competition_endpoint, api_key=self.api_key,
+            self.__competitions = DataSet(klass=Competition, endpoint=self.competition_endpoint, api_key=self.__api_key,
                                           options=options)
 
         return self.__competitions
@@ -60,6 +68,6 @@ class Connector:
         """
 
         if force_update or not self.__fixtures:
-            self.__fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.api_key)
+            self.__fixtures = DataSet(klass=Fixture, endpoint=self.fixtures_endpoint, api_key=self.__api_key)
 
         return self.__fixtures
