@@ -1,5 +1,6 @@
 import re
 import requests
+from requests.exceptions import HTTPError
 
 
 def fetch_data_from_api(endpoint, api_key='', options=None):
@@ -24,8 +25,10 @@ def fetch_data_from_api(endpoint, api_key='', options=None):
     # Return the json data if request is successful
     if r.status_code == 200:
         return r.json()
-
-    return []
+    elif r.status_code in [403, 404]:
+        return []
+    error = "Status: {} Content: {}".format(r.status_code, r.content)
+    raise HTTPError(error)
 
 
 def camel_to_snake(name):

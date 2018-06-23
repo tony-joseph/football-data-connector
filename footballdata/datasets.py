@@ -37,6 +37,10 @@ class Competition(FootballDataObject):
         self.__fixtures = []
         self.__league_table = []
 
+    def __repr__(self):
+        name = self.caption or 'Unknown'
+        return "Competition <{!r}>".format(name)
+
     def get_teams(self, force_update=False):
         """Fetches all teams in a competition
         
@@ -84,6 +88,12 @@ class Fixture(FootballDataObject):
         if hasattr(self, 'date'):
             self.date = datetime_parse(self.date)
 
+    def __repr__(self):
+        home_team = self.home_team_name or 'Unknown'
+        away_team = self.away_team_name or 'Unknown'
+        date = self.date or 'Unknown'
+        return "Fixture <{!r} v {!r} on {!r}>".format(home_team, away_team, date)
+
 
 class Team(FootballDataObject):
     """Class to represent a team"""
@@ -97,6 +107,10 @@ class Team(FootballDataObject):
         self.base_endpoint = self.links['self']['href']
         self.__fixtures = []
         self.__players = []
+
+    def __repr__(self):
+        name = self.name or 'Unknown'
+        return "Team <{!r}>".format(name)
 
     def get_fixtures(self, force_update=False):
         """Fetches all fixtures for a team
@@ -126,7 +140,9 @@ class Team(FootballDataObject):
 class Standing(FootballDataObject):
     """Class to represent a team's standing in a competition"""
 
-    pass
+    def __repr__(self):
+        team_name = self.team_name or 'Unknown'
+        return "Standing <{!r}>".format(team_name)
 
 
 class Player(FootballDataObject):
@@ -141,6 +157,10 @@ class Player(FootballDataObject):
             self.contract_until = datetime_parse(self.contract_until)
         if hasattr(self, 'date_of_birth') and self.date_of_birth:
             self.date_of_birth = datetime_parse(self.date_of_birth)
+
+    def __repr__(self):
+        name = self.name or 'Unknown'
+        return "Player <{!r}>".format(name)
 
 
 class DataSet:
@@ -169,6 +189,9 @@ class DataSet:
             self.__data_set = list(data_list)
         else:
             self.__data_set = []
+
+    def __repr__(self):
+        return "DataSet <{!r}>".format(self.__klass.__name__)
 
     def __create_data_set_item(self, cleaned_data):
         """Creates a single football data object
