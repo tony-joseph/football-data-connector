@@ -28,7 +28,7 @@ If you need the latest version, you can install it directly from github reposito
 Before retrieving data, you need to create a connection object.
 
 ```python
-from footballdata.connector import Connector
+from footballdata import Connector
 
 connection = Connector()
 ``` 
