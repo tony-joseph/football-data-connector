@@ -1,3 +1,13 @@
+"""
+    tests.config
+    ~~~~~~~~~~~~
+
+    Includes configuration to control test run.
+
+    :copyright: (c) 2018 Tony Joseph
+    :license: BSD 3-Clause
+"""
+
 import datetime
 import os
 
