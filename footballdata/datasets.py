@@ -20,7 +20,7 @@ class FootballDataObject:
     def __init__(self, **kwargs):
         """Initialises new object with attributes from keyword arguments"""
 
-        for key in kwargs.keys():
+        for key in kwargs:
             if key == 'last_updated' and kwargs[key]:
                 kwargs[key] = datetime_parse(kwargs[key])
             setattr(self, key, kwargs[key])
@@ -37,6 +37,17 @@ class Competition(FootballDataObject):
     def __init__(self, **kwargs):
         """Initialises new competition object"""
 
+        # These values are set by FootballDataObject constructor using values in kwargs
+        self.id = ''
+        self.caption = ''
+        self.current_match_day = ''
+        self.last_updated = ''
+        self.league = ''
+        self.number_of_games = ''
+        self.number_of_teams = ''
+        self.year = ''
+        self.links = {}
+
         super().__init__(**kwargs)
 
         # Set competition attributes
@@ -44,6 +55,8 @@ class Competition(FootballDataObject):
         self.league_table_endpoint = self.links['leagueTable']['href']
         self.teams_endpoint = self.links['teams']['href']
         self.base_endpoint = self.links['self']['href']
+
+        # :TODO: These empty lists should be replaced with empty data set objects
         self.__teams = []
         self.__fixtures = []
         self.__league_table = []
@@ -93,6 +106,17 @@ class Fixture(FootballDataObject):
     """Class to represent a fixture"""
 
     def __init__(self, **kwargs):
+        """Initialises new Fixture object"""
+
+        # These values are set by FootballDataObject constructor using values in kwargs
+        self.date = ''
+        self.away_team_name = ''
+        self.home_team_name = ''
+        self.match_day = ''
+        self.odds = ''
+        self.result = ''
+        self.status = ''
+
         super().__init__(**kwargs)
 
         # Convert date to datetime object
@@ -110,12 +134,22 @@ class Team(FootballDataObject):
     """Class to represent a team"""
 
     def __init__(self, **kwargs):
+        # These values are set by FootballDataObject constructor using values in kwargs
+        self.code = ''
+        self.crest_url = ''
+        self.name = ''
+        self.short_name = ''
+        self.squad_market_value = ''
+        self.links = {}
+
         super().__init__(**kwargs)
 
         # Set extra attributes
         self.fixtures_endpoint = self.links['fixtures']['href']
         self.players_endpoint = self.links['players']['href']
         self.base_endpoint = self.links['self']['href']
+
+        # :TODO: These empty lists should be replaced with empty data set objects
         self.__fixtures = []
         self.__players = []
 
@@ -151,6 +185,24 @@ class Team(FootballDataObject):
 class Standing(FootballDataObject):
     """Class to represent a team's standing in a competition"""
 
+    def __init__(self, **kwargs):
+        # These values are set by FootballDataObject constructor using values in kwargs
+        self.team_name = ''
+        self.crest_uri = ''
+        self.played_games = ''
+        self.wins = ''
+        self.draws = ''
+        self.losses = ''
+        self.home = ''
+        self.away = ''
+        self.points = ''
+        self.position = ''
+        self.goals = ''
+        self.goals_against = ''
+        self.goal_difference = ''
+
+        super().__init__(**kwargs)
+
     def __repr__(self):
         team_name = self.team_name or 'Unknown'
         return "Standing <{!r}>".format(team_name)
@@ -161,6 +213,16 @@ class Player(FootballDataObject):
 
     def __init__(self, **kwargs):
         """Initialises Player object"""
+
+        # These values are set by FootballDataObject constructor using values in kwargs
+        self.name = ''
+        self.nationality = ''
+        self.position = ''
+        self.contract_until = ''
+        self.date_of_birth = ''
+        self.jersey_number = ''
+        self.market_value = ''
+
         super().__init__(**kwargs)
 
         # Convert contract_until and date_of_birth to datetime objects
