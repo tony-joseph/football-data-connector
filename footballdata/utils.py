@@ -1,3 +1,13 @@
+"""
+    footballdata.utils
+    ~~~~~~~~~~~~~~~~~~
+
+    Implements various helpers.
+
+    :copyright: (c) 2018 Tony Joseph
+    :license: BSD 3-Clause
+"""
+
 import re
 import requests
 from requests.exceptions import HTTPError

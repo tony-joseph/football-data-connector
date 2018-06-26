@@ -1,3 +1,14 @@
+"""
+    footballdata.datasets
+    ~~~~~~~~~~~~~~~~~~~~~
+
+    This module implements the data structures used to represent the data
+    returned from the API.
+
+    :copyright: (c) 2018 Tony Joseph
+    :license: BSD 3-Clause
+"""
+
 from dateutil.parser import parse as datetime_parse
 
 from .utils import fetch_data_from_api, clean_object

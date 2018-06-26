@@ -1,3 +1,13 @@
+"""
+    footballdata.connector
+    ~~~~~~~~~~~~~~~~~~~~~~
+
+    This module contains utilities to connect to API.
+
+    :copyright: (c) 2018 Tony Joseph
+    :license: BSD 3-Clause
+"""
+
 from .datasets import DataSet, Competition, Fixture
 
 
@@ -39,10 +49,18 @@ class Connector:
 
     @property
     def api_key(self):
+        """Returns API key given at the time of initiating the object
+
+        :return: str - API key
+        """
         return self.__api_key
 
     @property
     def api_version(self):
+        """Returns API version given at the time of initiating the object
+
+        :return: str - API version
+        """
         return self.__api_version
 
     def get_competitions(self, season='', force_update=False):
