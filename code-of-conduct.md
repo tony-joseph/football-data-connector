@@ -1,4 +1,4 @@
-# Contributor Covenant Code of Conduct
+# Football Data Connector Code of Conduct
 
 ## Our Pledge
 
