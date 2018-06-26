@@ -8,7 +8,7 @@ class Connector:
 
     def __init__(self, api_key='', api_version='v1'):
         """Initialises connection to football-data.org
-        
+
         :param api_key: API key from football-data.org, optional
         :param api_version: API version, defaults to v1
         :return: Connector object
@@ -47,7 +47,7 @@ class Connector:
 
     def get_competitions(self, season='', force_update=False):
         """Fetches all competitions
-        
+
         :param force_update: Boolean, overrides cached results if True
         :param season: 4 digit integer representing a season, optional
         :return: DataSet of Competition objects

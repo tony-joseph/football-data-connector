@@ -43,7 +43,7 @@ class Competition(FootballDataObject):
 
     def get_teams(self, force_update=False):
         """Fetches all teams in a competition
-        
+
         :param force_update: Boolean, overrides cached results if True
         :return: DataSet of Team objects
         """
@@ -195,7 +195,7 @@ class DataSet:
 
     def __create_data_set_item(self, cleaned_data):
         """Creates a single football data object
-        
+
         :param cleaned_data: Dict with proper key value pairs
         :return: FootballDataObject object
         """
