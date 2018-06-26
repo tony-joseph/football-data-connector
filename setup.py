@@ -3,7 +3,7 @@ from setuptools import setup
 
 setup(
     name='football-data-connector',
-    version='0.1.0',
+    version='0.9.0',
     url='https://github.com/tony-joseph/football-data-connector',
     license='BSD',
     author='Tony Joseph',
@@ -16,7 +16,7 @@ setup(
         'requests>=2.19.1',
     ],
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'License :: OSI Approved :: BSD License',
         'Operating System :: OS Independent',
