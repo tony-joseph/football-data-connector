@@ -1,14 +1,23 @@
+from os import path
 from setuptools import setup
+
+
+# read the contents of your README file
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 
 setup(
     name='football-data-connector',
-    version='0.9.0',
+    version='0.9.1',
     url='https://github.com/tony-joseph/football-data-connector',
     license='BSD',
     author='Tony Joseph',
     author_email='tony@tonyj.me',
     description='Python package to connect to football-data.org API',
+    long_description=long_description,
+    long_description_content_type='text/markdown',
     packages=['footballdata'],
     include_package_data=True,
     install_requires=[
